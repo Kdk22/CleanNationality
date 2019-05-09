@@ -100,11 +100,13 @@ class IndexView(TemplateView):
         best_match_nationality = best_match.to_dict()
 
         self.extra_context['nationality']= nationality
-
+        final = []
         for k, v in best_score_nationality.items():
+            final.append([k, v, best_match_nationality[k]])
             results[k] = {v, best_match_nationality[k]}
 
-        self.extra_context['Old_nationality']= results
+        self.extra_context['all_nationality']= final
+
         if self.extra_context is not None:
             kwargs.update(self.extra_context)
             import ipdb

@@ -4,7 +4,6 @@
 
 
 <table>
-
         <td>
             <table>
                 <thead>
@@ -52,20 +51,48 @@
             </table>
         </td>
     <td>
-    <table>
-            <thead>
+        <table>
+                <thead>
+                    <tr>
+                        <td>Correct Nationality</td>
+                    </tr>
+                </thead>
+            <tbody>
+
                 <tr>
-                    <td>Correct Nationality</td>
+                    <td>{% for D in nationality %}<select id="na"><option value="{{ D }}">{{ D }}</option></select> {% endfor %}</td>
                 </tr>
-            </thead>
-        <tbody>
-        <tr>
-            <td></td>
-        </tr>
-        </tbody>
-    </table>
+
+            </tbody>
+        </table>
     </td>
 
 
+</table>
+
+    <table class="table">
+  <caption>List of users</caption>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Job Seeker Nationality</th>
+      <th scope="col">Probable Match</th>
+      <th scope="col">Match Score</th>
+      <th scope="col">Correct Nationality</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+
+        {% for P in all_nationality %}
+           <td> {{ forloop.counter }}</td>
+            {% for i in P %}
+                <td>{{ i }}</td>
+            {% endfor %}
+
+             <td>@mdo</td>
+            {% endfor %}
+    </tr>
+  </tbody>
 </table>
 {% endblock %}
