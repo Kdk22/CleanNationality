@@ -6,6 +6,6 @@ app_name = 'NationalityClean'
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('nationality/', views.IndexView, name='index')
+    path('nationality/', views.IndexView.as_view(), name='index')
 
 ]

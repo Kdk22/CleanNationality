@@ -1,10 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>THis is Nationality</title>
-</head>
-<body>
+{% extends "NationalityCleaner/base.html" %}
+{% block body_block %}
 
-</body>
-</html>
+
+
+<table>
+
+        <td>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Job Seeker Nationality</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for P in Old_nationality %}
+                        <tr>
+                            <td> {{ P }}</td>
+                         </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </td>
+        <td>
+
+            <table>
+                <thead>
+                    <tr>
+                        <td>Probable Match</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td>
+            <table>
+                    <thead>
+                        <tr>
+                            <td>Match Score</td>
+                        </tr>
+                    </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+    <td>
+    <table>
+            <thead>
+                <tr>
+                    <td>Correct Nationality</td>
+                </tr>
+            </thead>
+        <tbody>
+        <tr>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+    </td>
+
+
+</table>
+{% endblock %}
