@@ -12,9 +12,8 @@
       <th scope="col">#</th>
       <th scope="col">Job Seeker Nationality</th>
       <th scope="col"> Best Score </th>
-      <th scope="col"> Probable Nationality</th>
-        <th scope="col"> Select Nationality</th>
-        <th scope="col"> Correct</th>
+      <th scope="col"> Select Nationality</th>
+      <th scope="col"> Correct</th>
   </thead>
 
     <tbody>
@@ -24,13 +23,17 @@
             <form action="{% url 'NationalityClean:data_post' %}" method="post" >
             {% csrf_token %}
            <td> {{ forloop.counter }}</td>
-            {% for each_nationality in individual_nationality_values %}
-                <td>
-                    <input hidden name="each_nationality_data" value="{{ each_nationality }}">
-                    {{ each_nationality }}</td>
-            {% endfor %}
+{#            {% for each_nationality in individual_nationality_values %}#}
+
+                <td>{{ individual_nationality_values.0 }}</td>
+                <td>{{ individual_nationality_values.1 }}</td>
 
 
+                <input hidden name="each_nationality_data" value="{{ individual_nationality_values.2 }}">
+
+
+
+{#            {% endfor %}#}
              <td>{% if individual_nationality_values.1 > 0.90 %}
 
 
