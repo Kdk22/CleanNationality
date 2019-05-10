@@ -13,3 +13,8 @@ td, th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
+#post_all {
+  postion: relative;
+  right: 0;
+}

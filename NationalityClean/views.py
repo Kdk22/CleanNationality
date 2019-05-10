@@ -1,5 +1,6 @@
 from django.db.models.functions import Lower
 from django.shortcuts import render
+from django.core.paginator import Paginator
 
 # from jaro import  jaro
 # from .consts import DB
@@ -14,7 +15,7 @@ from .consts import DB
 from .models import JobSeekerUserDetail, CleanNationality
 
 # Create your views here.
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, CreateView
 from sqlalchemy.engine.url import URL
 
 nationality = ["Afghan", "Albanian", "Algerian", "American Samoan", "Andorran", "Angolan", "Anguillan", "Antarctic",
@@ -85,11 +86,13 @@ def clean_data():
             range(len(db_nationality))]
     df_dist = pd.DataFrame(dist, columns=df_nationality, index=db_nationality)
 
+
     return df_dist
 
 class IndexView(TemplateView):
     template_name = 'NationalityCleaner/index.html'
     extra_context = {}
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         results = {}
@@ -112,9 +115,20 @@ class IndexView(TemplateView):
         if self.extra_context is not None:
             kwargs.update(self.extra_context)
 
-
         return kwargs
 
+
+class PostNationality(CreateView):
+
+
+    def post(self, request, **kwargs):
+        print(request)
+
+
+class PostAllNationality(CreateView):
+
+    def post(self,request, **kwargs):
+        print(request)
 
 # class IndexView(ListView):
 #     template_name  = 'NationalityCleaner/index.html'
