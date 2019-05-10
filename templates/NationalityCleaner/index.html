@@ -4,95 +4,33 @@
 
 
 <table>
-        <td>
-            <table>
-                <thead>
-                    <tr>
-                        <td>Job Seeker Nationality</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for P in Old_nationality %}
-                        <tr>
-                            <td> {{ P }}</td>
-                         </tr>
 
-                    {% endfor %}
-                </tbody>
-            </table>
-        </td>
-        <td>
-
-            <table>
-                <thead>
-                    <tr>
-                        <td>Probable Match</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </td>
-        <td>
-            <table>
-                    <thead>
-                        <tr>
-                            <td>Match Score</td>
-                        </tr>
-                    </thead>
-                <tbody>
-                    <tr>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </td>
-    <td>
-        <table>
-                <thead>
-                    <tr>
-                        <td>Correct Nationality</td>
-                    </tr>
-                </thead>
-            <tbody>
-
-                <tr>
-                    <td>{% for D in nationality %}<select id="na"><option value="{{ D }}">{{ D }}</option></select> {% endfor %}</td>
-                </tr>
-
-            </tbody>
-        </table>
-    </td>
-
-
-</table>
-
-    <table class="table">
-  <caption>List of users</caption>
-  <thead>
+  <tbody>
+<thead>
     <tr>
       <th scope="col">#</th>
       <th scope="col">Job Seeker Nationality</th>
-      <th scope="col">Probable Match</th>
-      <th scope="col">Match Score</th>
-      <th scope="col">Correct Nationality</th>
+      <th scope="col"> Best Score </th>
+      <th scope="col"> Probable Nationality</th>
+        <th scope="col"> Select Nationality</th>
     </tr>
   </thead>
-  <tbody>
-    <tr>
 
-        {% for P in all_nationality %}
+        {% for individual_nationality_values in all_nationality %}
+            <tr>
            <td> {{ forloop.counter }}</td>
-            {% for i in P %}
-                <td>{{ i }}</td>
+            {% for each_nationality in individual_nationality_values %}
+                <td>{{ each_nationality }}</td>
+            {% endfor %}
+{#            <td>@meoo</td>#}
+
+             <td><select id="na">{% for D in nationality %}
+
+                 <option {% ifequal D|lower individual_nationality_values.2 %} selected {% endifequal %} value="{{ D }}">{{ D }}</option>{% endfor %}</select></td>
+
+            </tr>
             {% endfor %}
 
-             <td>@mdo</td>
-            {% endfor %}
-    </tr>
   </tbody>
 </table>
 {% endblock %}

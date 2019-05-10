@@ -70,6 +70,7 @@ def getData(**kwargs):
     engine = create_engine(cs)
     df = pd.read_sql_query('SELECT DISTINCT lower(nationality) AS nationality FROM "NationalityClean_jobseekeruserdetail";',
                            con=engine)
+
     return df['nationality']
 
 
@@ -83,6 +84,7 @@ def clean_data():
     dist = [[jaro_winkler(df_nationality[i], db_nationality[j]) for i in range(len(df_nationality))] for j in
             range(len(db_nationality))]
     df_dist = pd.DataFrame(dist, columns=df_nationality, index=db_nationality)
+
     return df_dist
 
 class IndexView(TemplateView):
@@ -109,8 +111,6 @@ class IndexView(TemplateView):
 
         if self.extra_context is not None:
             kwargs.update(self.extra_context)
-            import ipdb
-            ipdb.set_trace()
 
 
         return kwargs
