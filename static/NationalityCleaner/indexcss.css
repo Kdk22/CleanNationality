@@ -14,7 +14,7 @@ tr:nth-child(even) {
   background-color: #dddddd;
 }
 
-#post_all {
-  postion: relative;
-  right: 0;
+.btn-space {
+    margin-right: 5px;
+    margin-top: 10px;
 }

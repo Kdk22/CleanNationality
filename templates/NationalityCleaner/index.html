@@ -24,7 +24,8 @@
             {% csrf_token %}
            <td> {{ forloop.counter }}</td>
 {#            {% for each_nationality in individual_nationality_values %}#}
-
+                <input hidden name="job_seeker_nationality" value="{{ individual_nationality_values.0 }}">
+                <input hidden name="best_score" value="{{ individual_nationality_values.1 }}">
                 <td>{{ individual_nationality_values.0 }}</td>
                 <td>{{ individual_nationality_values.1 }}</td>
 
@@ -34,18 +35,19 @@
 
 
 {#            {% endfor %}#}
+            <input type="hidden" name="individual_nationality_values" value="{{ individual_nationality_values.2|capfirst }}">
              <td>{% if individual_nationality_values.1 > 0.90 %}
 
 
-                 {{ individual_nationality_values.2 }}
-                 <input hidden value="{{ individual_nationality_values.2 }}">
+                 {{ individual_nationality_values.2|capfirst }}
+
 
                     {% else %}
 
                     <select id="na">{% for correct_nationality in nationality %}
 
                      <option {% ifequal correct_nationality|lower individual_nationality_values.2 %} selected {% endifequal %} value="{{ correct_nationality }}">{{ correct_nationality }}</option>{% endfor %}</select></td>
-                    <td><button type="submit" class="btn btn-default btn-lg">
+                    <td><button type="submit" class="btn btn-default btn-md btn-l">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post
                         </button></td>
             {% endif %}
@@ -59,7 +61,7 @@
 
 
 </table>
-<button  type="submit" class="btn btn-default btn-lg pull-right mt-auto">
+<button  type="submit" class="btn btn-primary btn-lg pull-right mt-auto">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post ALL
                         </button></td>
 

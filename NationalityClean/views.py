@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 # from .consts import DB
 
 import pandas as pd
+from django.views import View
 from sqlalchemy import create_engine
 from Levenshtein import jaro_winkler, hamming, jaro, distance
 
@@ -118,11 +119,17 @@ class IndexView(TemplateView):
         return kwargs
 
 
-class PostNationality(CreateView):
+class PostNationality(View):
 
 
     def post(self, request, **kwargs):
+
+        job_seeker_nationality =  request.POST['job_seeker_nationality']
+        best_score = request.POST['best_score']
+        import ipdb
+        ipdb.set_trace()
         print(request)
+        return request
 
 
 class PostAllNationality(CreateView):
