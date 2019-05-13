@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'NationalityCleaner.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'nationalityclean',
-        'USER': 'postgres',
-        'PASSWORD': '12345',
+        'NAME': 'alljobseekersdata',
+        'USER': 'myuser',
+        'PASSWORD': 'mypass12345',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
