@@ -1,4 +1,5 @@
 from django.db.models.functions import Lower
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.paginator import Paginator
 
@@ -126,10 +127,18 @@ class PostNationality(View):
 
         job_seeker_nationality =  request.POST['job_seeker_nationality']
         best_score = request.POST['best_score']
+        score= float(best_score)
+        old_nationality = request.POST['job_seeker_nationality']
+        corrected_nationality = request.POST['each_nationality_data']
+
+        data = CleanNationality.objects.create(old_nationality='old_nationality', cleaned_nationality='corrected_nationality', score= 'score')
+
         import ipdb
         ipdb.set_trace()
-        print(request)
-        return request
+        data.save()
+
+
+        return HttpResponseRedirect(self.reverse_lazy('NationalityClean:index'))
 
 
 class PostAllNationality(CreateView):
