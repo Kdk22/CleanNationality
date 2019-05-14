@@ -2,12 +2,11 @@ from django.db.models.functions import Lower
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.paginator import Paginator
-
+from django.urls import reverse
 # from jaro import  jaro
 # from .consts import DB
 
 import pandas as pd
-from django.urls import reverse_lazy, reverse
 from django.views import View
 from sqlalchemy import create_engine
 from Levenshtein import jaro_winkler, hamming, jaro, distance
@@ -122,7 +121,7 @@ class IndexView(TemplateView):
 
 
 class PostNationality(View):
-    template_name = 'NationalityCleaner/index.html'
+
 
     def post(self, request, **kwargs):
 
@@ -133,13 +132,13 @@ class PostNationality(View):
         corrected_nationality = request.POST['each_nationality_data']
 
         data = CleanNationality.objects.create(old_nationality=old_nationality, cleaned_nationality=corrected_nationality, score= score)
+
         import ipdb
         ipdb.set_trace()
-
         data.save()
 
 
-        return HttpResponseRedirect(reverse('NationalityClean:index'))
+        return reverse('NationalityClean:index')
 
 
 class PostAllNationality(CreateView):
