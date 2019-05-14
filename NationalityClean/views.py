@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 # from .consts import DB
 
 import pandas as pd
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from sqlalchemy import create_engine
 from Levenshtein import jaro_winkler, hamming, jaro, distance
@@ -121,7 +122,7 @@ class IndexView(TemplateView):
 
 
 class PostNationality(View):
-
+    template_name = 'NationalityCleaner/index.html'
 
     def post(self, request, **kwargs):
 
@@ -131,14 +132,14 @@ class PostNationality(View):
         old_nationality = request.POST['job_seeker_nationality']
         corrected_nationality = request.POST['each_nationality_data']
 
-        data = CleanNationality.objects.create(old_nationality='old_nationality', cleaned_nationality='corrected_nationality', score= 'score')
-
+        data = CleanNationality.objects.create(old_nationality=old_nationality, cleaned_nationality=corrected_nationality, score= score)
         import ipdb
         ipdb.set_trace()
+
         data.save()
 
 
-        return HttpResponseRedirect(self.reverse_lazy('NationalityClean:index'))
+        return HttpResponseRedirect(reverse('NationalityClean:index'))
 
 
 class PostAllNationality(CreateView):
