@@ -27,7 +27,27 @@
                 <input hidden name="job_seeker_nationality" value="{{ individual_nationality_values.0 }}">
                 <input hidden name="best_score" value="{{ individual_nationality_values.1 }}">
                 <td>{{ individual_nationality_values.0 }}</td>
-                <td>{{ individual_nationality_values.1 }}</td>
+                 <td>{% if individual_nationality_values.1 > 0.98 %}
+
+
+                 {{ individual_nationality_values.2|capfirst }}
+                     <td>{{ individual_nationality_values.1 }}</td>
+
+
+                    {% else %}
+
+                    <select id="na">{% for correct_nationality in nationality %}
+
+                     <option {% ifequal correct_nationality|lower individual_nationality_values.2 %} selected {% endifequal %} value="{{ correct_nationality }}">{{ correct_nationality }}</option>{% endfor %}</select></td>
+                     <td>{{ individual_nationality_values.1 }}</td>
+                    <td><button type="submit" class="btn btn-default btn-md btn-l">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post
+                        </button>
+                        {% endif %}
+                    </td>
+
+
+
 
 
                 <input hidden name="each_nationality_data" value="{{ individual_nationality_values.2 }}">
@@ -36,21 +56,8 @@
 
 {#            {% endfor %}#}
             <input type="hidden" name="individual_nationality_values" value="{{ individual_nationality_values.2|capfirst }}">
-             <td>{% if individual_nationality_values.1 > 0.90 %}
 
 
-                 {{ individual_nationality_values.2|capfirst }}
-
-
-                    {% else %}
-
-                    <select id="na">{% for correct_nationality in nationality %}
-
-                     <option {% ifequal correct_nationality|lower individual_nationality_values.2 %} selected {% endifequal %} value="{{ correct_nationality }}">{{ correct_nationality }}</option>{% endfor %}</select></td>
-                    <td><button type="submit" class="btn btn-default btn-md btn-l">
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post
-                        </button></td>
-            {% endif %}
             </form>
             </tr>
             {% endfor %}

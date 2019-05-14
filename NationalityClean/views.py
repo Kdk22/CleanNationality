@@ -2,7 +2,7 @@ from django.db.models.functions import Lower
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.paginator import Paginator
-
+from django.urls import reverse
 # from jaro import  jaro
 # from .consts import DB
 
@@ -131,14 +131,14 @@ class PostNationality(View):
         old_nationality = request.POST['job_seeker_nationality']
         corrected_nationality = request.POST['each_nationality_data']
 
-        data = CleanNationality.objects.create(old_nationality='old_nationality', cleaned_nationality='corrected_nationality', score= 'score')
+        data = CleanNationality.objects.create(old_nationality=old_nationality, cleaned_nationality=corrected_nationality, score= score)
 
         import ipdb
         ipdb.set_trace()
         data.save()
 
 
-        return HttpResponseRedirect(self.reverse_lazy('NationalityClean:index'))
+        return reverse('NationalityClean:index')
 
 
 class PostAllNationality(CreateView):
