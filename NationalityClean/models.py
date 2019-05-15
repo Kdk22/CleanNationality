@@ -1,6 +1,12 @@
 from django.db import models
 
 # Create your models here.
+class FilterNationality(models.Model):
+    unverified_nationality = models.CharField(max_length=100)
+    verified_nationality = models.CharField(max_length=100)
+    score = models.FloatField()
+    verified_status = models.BooleanField(default=False)
+
 
 class CleanNationality(models.Model):
     old_nationality = models.CharField(max_length=100)
