@@ -1,10 +1,11 @@
 from django.db.models.functions import Lower
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.urls import reverse
 # from jaro import  jaro
 # from .consts import DB
+import numpy as np
 
 import pandas as pd
 from django.views import View
@@ -89,6 +90,7 @@ def clean_data():
     df_dist = pd.DataFrame(dist, columns=df_nationality, index=db_nationality)
 
 
+
     return df_dist
 
 class IndexView(TemplateView):
@@ -97,9 +99,8 @@ class IndexView(TemplateView):
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
         results = {}
-
-        kwargs.setdefault('view', self)
         val= clean_data()
         best_score = val.max(axis=1)
         best_match = val.idxmax(axis=1)
@@ -117,7 +118,32 @@ class IndexView(TemplateView):
         if self.extra_context is not None:
             kwargs.update(self.extra_context)
 
-        return kwargs
+
+        remove_data= list(CleanNationality.objects.values_list('old_nationality','score','cleaned_nationality'))
+        old_nationality_data = kwargs['all_nationality']
+        filter_data=filter(lambda remove_data: set(remove_data) , old_nationality_data)
+
+
+        final_data = [
+            i for i in kwargs['all_nationality']  if tuple(i) not in remove_data
+        ]
+
+        ctx['all_nationality']= final_data
+        ctx['nationality']= nationality
+        import ipdb
+        ipdb.set_trace()
+        # for each_tuple in remove_data:
+        #     all_nationality_data=list(each_tuple)
+
+
+            # numpy_value = np.array(old_nationality_data)
+            # lst = [list(x) for x in numpy_value]
+            # lst.index(all_nationality_data)
+
+            # num_value=numpy_value.where(all_nationality_data)
+
+
+        return ctx
 
 
 class PostNationality(View):
@@ -128,17 +154,14 @@ class PostNationality(View):
         job_seeker_nationality =  request.POST['job_seeker_nationality']
         best_score = request.POST['best_score']
         score= float(best_score)
-        old_nationality = request.POST['job_seeker_nationality']
+        old_jobseekers_nationality = request.POST['job_seeker_nationality']
         corrected_nationality = request.POST['each_nationality_data']
 
-        data = CleanNationality.objects.create(old_nationality=old_nationality, cleaned_nationality=corrected_nationality, score= score)
+        data = CleanNationality.objects.create(old_nationality=old_jobseekers_nationality, cleaned_nationality=corrected_nationality, score= score)
 
-        import ipdb
-        ipdb.set_trace()
         data.save()
 
-
-        return reverse('NationalityClean:index')
+        return redirect(reverse('NationalityClean:index') )
 
 
 class PostAllNationality(CreateView):
