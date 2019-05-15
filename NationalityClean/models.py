@@ -5,7 +5,8 @@ from django.db import models
 class CleanNationality(models.Model):
     old_nationality = models.CharField(max_length=100)
     cleaned_nationality = models.CharField(max_length=100)
-    score = models.DecimalField()
+    score = models.FloatField()
+
 
     def __str__(self):
         return self.cleaned_nationality

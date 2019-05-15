@@ -11,8 +11,8 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Job Seeker Nationality</th>
+      <th scope="col"> Best Matched Nationality </th>
       <th scope="col"> Best Score </th>
-      <th scope="col"> Select Nationality</th>
       <th scope="col"> Correct</th>
   </thead>
 
@@ -40,7 +40,7 @@
 
                      <option {% ifequal correct_nationality|lower individual_nationality_values.2 %} selected {% endifequal %} value="{{ correct_nationality }}">{{ correct_nationality }}</option>{% endfor %}</select></td>
                      <td>{{ individual_nationality_values.1 }}</td>
-                    <td><button type="submit" class="btn btn-default btn-md btn-l">
+                    <td><button name="post_all" value="post_all_data"type="submit" class="btn btn-default btn-md btn-l">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post
                         </button>
                         {% endif %}
@@ -68,11 +68,34 @@
 
 
 </table>
-<button  type="submit" class="btn btn-primary btn-lg pull-right mt-auto">
+<nav aria-label="...">
+    <ul>
+        <span>
+<button  type="submit" name="post_all" value="post_all_data" class="btn btn-primary btn-lg pull-right mt-auto">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post ALL
                         </button></td>
-
+            </span>
+        </ul>
+</nav>
 </form>
-    {{ old_nationality }}
+
+    <nav aria-label="...">
+  <ul class="pagination">
+    <li class="page-item disabled">
+      <span class="page-link">Previous</span>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item active">
+      <span class="page-link">
+        2
+        <span class="sr-only">(current)</span>
+      </span>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item">
+      <a class="page-link" href="#">Next</a>
+    </li>
+  </ul>
+</nav>
 
 {% endblock %}

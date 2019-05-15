@@ -16,6 +16,7 @@ from .consts import DB
 
 
 from .models import JobSeekerUserDetail, CleanNationality
+from django.core.paginator import Paginator
 
 # Create your views here.
 from django.views.generic import ListView, TemplateView, CreateView
@@ -96,7 +97,7 @@ def clean_data():
 class IndexView(TemplateView):
     template_name = 'NationalityCleaner/index.html'
     extra_context = {}
-    paginate_by = 10
+
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -104,7 +105,8 @@ class IndexView(TemplateView):
         val= clean_data()
         best_score = val.max(axis=1)
         best_match = val.idxmax(axis=1)
-        best_score_nationality = best_score.to_dict()
+        best_score_rounded = best_score.round(5)
+        best_score_nationality = best_score_rounded.to_dict()
         best_match_nationality = best_match.to_dict()
 
         self.extra_context['nationality']= nationality
@@ -121,17 +123,16 @@ class IndexView(TemplateView):
 
         remove_data= list(CleanNationality.objects.values_list('old_nationality','score','cleaned_nationality'))
         old_nationality_data = kwargs['all_nationality']
-        filter_data=filter(lambda remove_data: set(remove_data) , old_nationality_data)
+
 
 
         final_data = [
             i for i in kwargs['all_nationality']  if tuple(i) not in remove_data
         ]
 
-        ctx['all_nationality']= final_data
-        ctx['nationality']= nationality
-        import ipdb
-        ipdb.set_trace()
+        ctx['all_nationality'] = final_data[:10]
+        ctx['nationality'] = nationality
+
         # for each_tuple in remove_data:
         #     all_nationality_data=list(each_tuple)
 
@@ -142,6 +143,30 @@ class IndexView(TemplateView):
 
             # num_value=numpy_value.where(all_nationality_data)
 
+        # for i in kwargs['all_nationality']:
+        #     old_nationality = i[0]
+        #     score = i[1]
+        #     new_nationality = i[2]
+        #
+        #     if score > 0.98:
+        #         bool= True
+        #     else:
+        #         bool= False
+        #
+        #     nationality_data =    CleanNationality.objects.create(old_nationality=old_nationality, cleaned_nationality=new_nationality, score= score, correct_status=bool )
+        #
+
+        if self.request.GET.get('post_all') == 'post_all_data':
+            print('user clicked button')
+            print('button clicked')
+            import ipdb
+            ipdb.set_trace()
+
+        # paginator = Paginator(kwargs['old_nationality'], 25)  # Show 25 contacts per page
+        #
+        # page = self.request.GET.get('page')
+        # old_nationality = paginator.get_page(page)
+        # return render(self.request, 'list.html', {'contacts': old_nationality})
 
         return ctx
 
@@ -158,7 +183,6 @@ class PostNationality(View):
         corrected_nationality = request.POST['each_nationality_data']
 
         data = CleanNationality.objects.create(old_nationality=old_jobseekers_nationality, cleaned_nationality=corrected_nationality, score= score)
-
         data.save()
 
         return redirect(reverse('NationalityClean:index') )
@@ -167,11 +191,39 @@ class PostNationality(View):
 class PostAllNationality(CreateView):
 
     def post(self,request, **kwargs):
-        print(request)
+        val = clean_data()
+        best_score = val.max(axis=1)
+        best_match = val.idxmax(axis=1)
+        best_score_rounded = best_score.round(5)
+        best_score_nationality = best_score_rounded.to_dict()
+        best_match_nationality = best_match.to_dict()
+        final=[]
+        results= {}
+        for old_nationality, best_score in best_score_nationality.items():
+            if best_score > 0.98:
+                final.append([old_nationality, best_score, best_match_nationality[old_nationality]])
+                results[old_nationality] = {best_score, best_match_nationality[old_nationality]}
+
+
+
+        bulk_list = list()
+        for each_user_data in final:
+            bulk_list.append(
+                CleanNationality(
+                    old_nationality=each_user_data[0],
+                    score=each_user_data[1],
+                    cleaned_nationality=each_user_data[2]
+                )
+            )
+
+        import ipdb
+        ipdb.set_trace()
+        CleanNationality.objects.bulk_create(bulk_list)
+
+        return redirect(reverse('NationalityClean:index'))
 
 # class IndexView(ListView):
 #     template_name  = 'NationalityCleaner/index.html'
-#
 #
 #
 #
@@ -180,6 +232,7 @@ class PostAllNationality(CreateView):
 #         model = JobSeekerUserDetail
 #         df = pd.DataFrame(nationality)
 #         df_nationality = df[0].str.lower()
+#
 #
 #         db_nationality = getData(**DB)
 #
