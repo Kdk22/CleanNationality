@@ -1,8 +1,5 @@
 {% extends "NationalityCleaner/base.html" %}
 {% block body_block %}
-
-
-{#<form action="{% url 'NationalityClean:data_post' %}" method="post">#}
 {% csrf_token %}
 <table>
 
@@ -20,12 +17,14 @@
 
         {% for nationality in all_nationality %}
             <tr>
-            <form action="{% url 'NationalityClean:data_post' %}" method="post" >
+
+            <form action="{% url 'NationalityClean:data_post' nationality.pk %}" method="post" >
             {% csrf_token %}
            <td> {{ forloop.counter }}</td>
 {#            {% for each_nationality in individual_nationality_values %}#}
-                <input hidden name="job_seeker_nationality" value="{{ nationality.unverified_nationality }}">
+                <input hidden name="unverified_nationality" value="{{ nationality.unverified_nationality }}">
                 <input hidden name="best_score" value="{{ nationality.score }}">
+                <input hidden name="verified_nationality" value="{{ nationality.verified_nationality|capfirst }}">
                 <td>{{ nationality.unverified_nationality }}</td>
                  <td>{% if nationality.score == 1%}
 
@@ -46,38 +45,30 @@
                     </td>
 
 
-
-
-
-                <input hidden name="each_nationality_data" value="{{ individual_nationality_values.2 }}">
-
-
-
-{#            {% endfor %}#}
-            <input type="hidden" name="individual_nationality_values" value="{{ individual_nationality_values.2|capfirst }}">
-
-
             </form>
             </tr>
             {% endfor %}
-
-
 
   </tbody>
 
 
 
 </table>
-<form action="{% url 'NationalityClean:data_post' %}" method="post">
+
+{% include 'NationalityCleaner/paginator.html' %}
+    {% if not page_obj.has_next%}
+     <form action="{% url 'NationalityClean:all_data_post' %}" method="post">
+{%csrf_token %}
 <nav aria-label="...">
     <ul>
         <span>
-            <select class="pull-right">
-  <option value="1">0.99</option>
-  <option value="0.99">0.98</option>
-  <option value="0.98">0.97</option>
-  <option value="0.97">0.96</option>
-  <option value="0.96">0.95</option>
+            <select name="input_score" class="pull-right">
+  <option value="1">1</option>
+  <option value="0.99">0.99</option>
+  <option value="0.98">0.98</option>
+  <option value="0.97">0.97</option>
+  <option value="0.96">0.96</option>
+  <option value="0.95">0.95</option>
 </select>
 <button  type="submit" name="post_all" value="post_all_data" class="btn btn-primary btn-lg pull-right mt-auto">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post ALL
@@ -86,24 +77,5 @@
         </ul>
 </nav>
 </form>
-
-    <nav aria-label="...">
-  <ul class="pagination">
-    <li class="page-item disabled">
-      <span class="page-link">Previous</span>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item active">
-      <span class="page-link">
-        2
-        <span class="sr-only">(current)</span>
-      </span>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#">Next</a>
-    </li>
-  </ul>
-</nav>
-
+{% endif %}
 {% endblock %}
