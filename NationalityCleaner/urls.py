@@ -21,7 +21,7 @@ from NationalityCleaner import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('nationalityclean/', include('NationalityClean.urls')),
+    path('nationality_clean/', include('NationalityClean.urls')),
 ]
 # if settings.DEBUG:
 #     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

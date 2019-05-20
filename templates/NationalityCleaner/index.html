@@ -18,7 +18,7 @@
         {% for nationality in all_nationality %}
             <tr>
 
-            <form action="{% url 'NationalityClean:data_post' nationality.pk %}" method="post" >
+            <form action="{% url 'nationality_clean:data_post' nationality.pk %}" method="post" >
             {% csrf_token %}
            <td> {{ forloop.counter }}</td>
 {#            {% for each_nationality in individual_nationality_values %}#}
@@ -56,8 +56,9 @@
 </table>
 
 {% include 'NationalityCleaner/paginator.html' %}
+    {{ page_obj }}
     {% if not page_obj.has_next%}
-     <form action="{% url 'NationalityClean:all_data_post' %}" method="post">
+     <form action="{% url 'nationality_clean:all_data_post' %}" method="post">
 {%csrf_token %}
 <nav aria-label="...">
     <ul>
