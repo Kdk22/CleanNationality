@@ -1,4 +1,4 @@
-{% extends "NationalityCleaner/base.html" %}
+{% extends "nationalityclean/base.html" %}
 {% block body_block %}
 {% csrf_token %}
 <table>
@@ -13,15 +13,16 @@
       <th scope="col"> Correct</th>
   </thead>
 
-    <tbody>
-
+<tbody>
         {% for nationality in all_nationality %}
+
             <tr>
 
             <form action="{% url 'nationality_clean:data_post' nationality.pk %}" method="post" >
             {% csrf_token %}
-           <td> {{ forloop.counter }}</td>
-{#            {% for each_nationality in individual_nationality_values %}#}
+           <td> {{forloop.counter|add:offset}}</td>
+
+
                 <input hidden name="unverified_nationality" value="{{ nationality.unverified_nationality }}">
                 <input hidden name="best_score" value="{{ nationality.score }}">
                 <input hidden name="verified_nationality" value="{{ nationality.verified_nationality|capfirst }}">
@@ -55,15 +56,16 @@
 
 </table>
 
-{% include 'NationalityCleaner/paginator.html' %}
-    {{ page_obj }}
-    {% if not page_obj.has_next%}
+{% include 'nationalityclean/paginator.html' %}
+
+
      <form action="{% url 'nationality_clean:all_data_post' %}" method="post">
 {%csrf_token %}
 <nav aria-label="...">
-    <ul>
+    <ul class="pull-right">
+        <label>Score Greater Than =  </label>
         <span>
-            <select name="input_score" class="pull-right">
+            <select name="input_score" class="btn-space">
   <option value="1">1</option>
   <option value="0.99">0.99</option>
   <option value="0.98">0.98</option>
@@ -71,12 +73,29 @@
   <option value="0.96">0.96</option>
   <option value="0.95">0.95</option>
 </select>
-<button  type="submit" name="post_all" value="post_all_data" class="btn btn-primary btn-lg pull-right mt-auto">
+<button id="post_all" type="submit" name="post_all" value="post_all_data" class="btn btn-primary btn-lg pull-right mt-auto">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post ALL
                         </button></td>
             </span>
         </ul>
 </nav>
 </form>
-{% endif %}
+
 {% endblock %}
+<script type="text/javascript">
+    var frm = $('#post_all');
+    frm.submit(function () {
+        $.ajax({
+            type: POST,
+            url:'{% url 'nationality_clean:all_data_post' %}' ,
+            data: { unverified_nationality : $('.unverified_nationality').val(), verified_nationality: $('verified_nationality'),best_score: $('best_score')  },
+            success: function (data) {
+                $("#SOME-DIV").html(data);
+            },
+            error: function(data) {
+                $("#MESSAGE-DIV").html("Something went wrong!");
+            }
+        });
+        return false;
+    });
+</script>

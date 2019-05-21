@@ -1,7 +1,6 @@
 from . import views
 from django.conf.urls import url
 from django.urls import path
-
 app_name = 'nationality_clean'
 
 urlpatterns = [
@@ -11,3 +10,5 @@ urlpatterns = [
     path('all_nationality_post/', views.PostAllNationality.as_view(), name='all_data_post')
 
 ]
+
+
