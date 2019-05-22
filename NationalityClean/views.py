@@ -4,9 +4,12 @@ import pandas as pd
 from django.views import View
 from sqlalchemy import create_engine
 from Levenshtein import jaro_winkler, hamming, jaro, distance
+
+from NationalityClean.forms import ReportForm
 from .consts import DB
 from .models import FilterNationality
-
+from django.forms import formset_factory
+from django.forms import modelformset_factory
 
 # Create your views here.
 from django.views.generic import ListView, TemplateView, CreateView
@@ -299,6 +302,8 @@ def clean_data():
     for k, v in best_score_nationality.items():
         final.append([k, v, best_match_nationality[k]])
     return final
+
+
 
 
 class IndexView(ListView):

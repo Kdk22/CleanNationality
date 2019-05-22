@@ -1,7 +1,8 @@
 {% extends "nationalityclean/base.html" %}
 {% block body_block %}
 {% csrf_token %}
-<table>
+ <form  method="post">
+    <table>
 
 
 <thead>
@@ -22,10 +23,11 @@
             {% csrf_token %}
            <td> {{forloop.counter|add:offset}}</td>
 
+{#{{ obj.pk }}#}
+                <input hidden id= "id" class="id" name="id" value="{{ nationality.pk }}">
 
-                <input hidden name="unverified_nationality" value="{{ nationality.unverified_nationality }}">
-                <input hidden name="best_score" value="{{ nationality.score }}">
-                <input hidden name="verified_nationality" value="{{ nationality.verified_nationality|capfirst }}">
+                <input hidden name="best_score" id="best_score" class="best_score" value="{{ nationality.score }}">
+                <input hidden name="verified_nationality" class="verified_nationality" value="{{ nationality.verified_nationality|capfirst }}">
                 <td>{{ nationality.unverified_nationality }}</td>
                  <td>{% if nationality.score == 1%}
 
@@ -56,16 +58,13 @@
 
 </table>
 
-{% include 'nationalityclean/paginator.html' %}
 
-
-     <form action="{% url 'nationality_clean:all_data_post' %}" method="post">
 {%csrf_token %}
 <nav aria-label="...">
     <ul class="pull-right">
         <label>Score Greater Than =  </label>
         <span>
-            <select name="input_score" class="btn-space">
+            <select id="input_score" name="input_score" class="btn-space">
   <option value="1">1</option>
   <option value="0.99">0.99</option>
   <option value="0.98">0.98</option>
@@ -73,7 +72,7 @@
   <option value="0.96">0.96</option>
   <option value="0.95">0.95</option>
 </select>
-<button id="post_all" type="submit" name="post_all" value="post_all_data" class="btn btn-primary btn-lg pull-right mt-auto">
+<button id="post_all" type="submit" name="post_all" value="post_all_data"  class="btn btn-primary btn-lg pull-right mt-auto">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post ALL
                         </button></td>
             </span>
@@ -81,16 +80,67 @@
 </nav>
 </form>
 
-{% endblock %}
-<script type="text/javascript">
-    var frm = $('#post_all');
-    frm.submit(function () {
+    <script type="text/javascript">
+   $(document).ready(function() {
+  $("#post_all").click(function(e) {
+    e.preventDefault();
+    var nationality_id = $(".id")
+
+      let id_length = $(".id").length
+      let score = $(".best_score")
+      let verified_nationality = $(".verified_nationality")
+
+      let input_score=$("#input_score").val()
+       all_data=[]
+
+             function list_data(id_length,score,verified_nationality, nationality_id) {
+           each_row_data = []
+           for (var i = 0; i < id_length; i++) {
+               each_row_data.push(nationality_id[i], score[i], verified_nationality[i])
+
+           }
+           all_data.push(each_row_data)
+       };
+
+      list_data(id_length,score,verified_nationality,nationality_id)
+
+
+
+
+        function compare(nationality_id, id_length,score, input_score){
+            score_list = []
+              each_item=[]
+            for(var i=0; i<id_length; i++){
+
+
+
+
+
+            if(score[i].value >= input_score){
+
+
+               var score_val = $(score[i])
+                var next_elem = $(score[i]).next().val()
+                var prev_elem = $(score[i]).prev().val()
+                each_item.push(prev_elem,score_val.value,next_elem);
+            }
+
+            }
+             return score_list.push(each_item)
+
+
+};
+        compare(nationality_id, id_length,score, input_score)
+        console.log(score_list);
+
+
         $.ajax({
-            type: POST,
-            url:'{% url 'nationality_clean:all_data_post' %}' ,
-            data: { unverified_nationality : $('.unverified_nationality').val(), verified_nationality: $('verified_nationality'),best_score: $('best_score')  },
+            type:'POST',
+            url:'{% url 'nationality_clean:all_data_post' %}',
+            data: { best_score_list : score_list  },
+            debugger
             success: function (data) {
-                $("#SOME-DIV").html(data);
+                $("#SOME-DIV").html('soething done')
             },
             error: function(data) {
                 $("#MESSAGE-DIV").html("Something went wrong!");
@@ -98,4 +148,10 @@
         });
         return false;
     });
+   });
 </script>
+
+
+
+{% include 'nationalityclean/paginator.html' %}
+{% endblock %}
