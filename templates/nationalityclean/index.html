@@ -1,69 +1,71 @@
 {% extends "nationalityclean/base.html" %}
 {% block body_block %}
-{% csrf_token %}
- <form  method="post">
+    {% csrf_token %}
+
     <table>
 
 
-<thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Job Seeker Nationality</th>
-      <th scope="col"> Best Matched Nationality </th>
-      <th scope="col"> Best Score </th>
-      <th scope="col"> Correct</th>
-  </thead>
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Job Seeker Nationality</th>
+            <th scope="col"> Best Matched Nationality</th>
+            <th scope="col"> Best Score</th>
+            <th scope="col"> Correct</th>
+        </thead>
 
-<tbody>
+        <tbody>
         {% for nationality in all_nationality %}
 
             <tr>
 
-            <form action="{% url 'nationality_clean:data_post' nationality.pk %}" method="post" >
-            {% csrf_token %}
-           <td> {{forloop.counter|add:offset}}</td>
+                <form action="{% url 'nationality_clean:data_post' nationality.pk %}" method="post">
+                    {% csrf_token %}
+                    <td> {{ forloop.counter|add:offset }}</td>
 
-{#{{ obj.pk }}#}
-                <input hidden id= "id" class="id" name="id" value="{{ nationality.pk }}">
+                    {#{{ obj.pk }}#}
+                    <input hidden id="id" class="id" name="id" value="{{ nationality.pk }}">
 
-                <input hidden name="best_score" id="best_score" class="best_score" value="{{ nationality.score }}">
-                <input hidden name="verified_nationality" class="verified_nationality" value="{{ nationality.verified_nationality|capfirst }}">
-                <td>{{ nationality.unverified_nationality }}</td>
-                 <td>{% if nationality.score == 1%}
-
-
-                 {{ nationality.verified_nationality|capfirst }}
-                     <td>{{ nationality.score }}</td>
-
-
+                    <input hidden name="best_score" id="best_score" class="best_score" value="{{ nationality.score }}">
+                    <input hidden id="verified_nationality_{{ nationality.pk }}" class="verified_nationality"
+                           value="{{ nationality.verified_nationality|capfirst }}">
+                    <td>{{ nationality.unverified_nationality }}</td>
+                    <td>{% if nationality.score == 1 %}
+                        {{ nationality.verified_nationality|capfirst }}
+                        <td>{{ nationality.score }}</td>
                     {% else %}
 
-                    <select id="na">{% for correct_nationality in df_nationality %}
-                     <option {% ifequal correct_nationality|lower nationality.verified_nationality %} selected {% endifequal %} value="{{ correct_nationality }}">{{ correct_nationality }}</option>{% endfor %}</select></td>
-                     <td>{{ nationality.score }}</td>
-                    <td><button name="post_all" value="post_all_data"type="submit" class="btn btn-default btn-md btn-l">
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post
+                        <select id="{{ nationality.pk }}" class="select_nationality_class" name="select_nationality">
+                            {% for correct_nationality in df_nationality %}
+                                <option {% ifequal correct_nationality|lower nationality.verified_nationality %}
+                                    selected {% endifequal %}
+                                    value="{{ correct_nationality }}">{{ correct_nationality }}</option>{% endfor %}
+                        </select></td>
+                        <td>{{ nationality.score }}</td>
+                        <td>
+                        <button name="post_all" value="post_all_data" type="submit"
+                                class="btn btn-default btn-md btn-l">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post
                         </button>
-                        {% endif %}
-                    </td>
+                    {% endif %}
+                        </td>
 
 
-            </form>
+                </form>
             </tr>
-            {% endfor %}
+        {% endfor %}
 
-  </tbody>
-
-
-
-</table>
+        </tbody>
 
 
-{%csrf_token %}
-<nav aria-label="...">
-    <ul class="pull-right">
-        <label>Score Greater Than =  </label>
-        <span>
+    </table>
+
+
+    {% csrf_token %}
+    <nav aria-label="...">
+        <ul class="pull-right">
+            <label>Score Greater Than = </label>
+            <span>
             <select id="input_score" name="input_score" class="btn-space">
   <option value="1">1</option>
   <option value="0.99">0.99</option>
@@ -72,86 +74,87 @@
   <option value="0.96">0.96</option>
   <option value="0.95">0.95</option>
 </select>
-<button id="post_all" type="submit" name="post_all" value="post_all_data"  class="btn btn-primary btn-lg pull-right mt-auto">
+<button id="post_all" type="submit" name="post_all" value="post_all_data"
+        class="btn btn-primary btn-lg pull-right mt-auto">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Post ALL
-                        </button></td>
+                        </button>
+                </td>
             </span>
         </ul>
-</nav>
-</form>
+    </nav>
+
 
     <script type="text/javascript">
-   $(document).ready(function() {
-  $("#post_all").click(function(e) {
-    e.preventDefault();
-    var nationality_id = $(".id")
-
-      let id_length = $(".id").length
-      let score = $(".best_score")
-      let verified_nationality = $(".verified_nationality")
-
-      let input_score=$("#input_score").val()
-       all_data=[]
-
-             function list_data(id_length,score,verified_nationality, nationality_id) {
-           each_row_data = []
-           for (var i = 0; i < id_length; i++) {
-               each_row_data.push(nationality_id[i], score[i], verified_nationality[i])
-
-           }
-           all_data.push(each_row_data)
-       };
-
-      list_data(id_length,score,verified_nationality,nationality_id)
+        $('.select_nationality_class').bind('change', function () {
+            var updated_na_value = $(this).val()
+            var updated_na_value_id = $(this).attr('id')
+            $(`#verified_nationality_${updated_na_value_id}`).val(updated_na_value)
+            debugger
 
 
+        });
+
+        $(document).ready(function () {
+            $("#post_all").click(function (e) {
+                e.preventDefault();
+                var nationality_id = $(".id")
+
+                let id_length = $(".id").length
+                let score = $(".best_score")
+                let verified_nationality = $(".verified_nationality")
+
+                let input_score = $("#input_score").val()
+                all_data = []
+
+                function list_data(id_length, score, verified_nationality, nationality_id) {
+                    each_row_data = []
+                    for (var i = 0; i < id_length; i++) {
+                        each_row_data.push(nationality_id[i], score[i], verified_nationality[i])
+
+                    }
+                    all_data.push(each_row_data)
+                };
+
+                list_data(id_length, score, verified_nationality, nationality_id)
 
 
-        function compare(nationality_id, id_length,score, input_score){
-            score_list = []
-              each_item=[]
-            for(var i=0; i<id_length; i++){
+                function compare(nationality_id, id_length, score, input_score) {
+                    score_list = []
+                    for (var i = 0; i < id_length; i++) {
+                        if (score[i].value >= input_score) {
+                            var score_val = $(score[i]).val()
+                            var next_elem = $(score[i]).next().val()
+                            var prev_elem = $(score[i]).prev().val()
+                            score_list.push({id: prev_elem, score: score_val, Nationality: next_elem});
+                        }
+                    }
+                    return score_list
 
 
-
-
-
-            if(score[i].value >= input_score){
-
-
-               var score_val = $(score[i])
-                var next_elem = $(score[i]).next().val()
-                var prev_elem = $(score[i]).prev().val()
-                each_item.push(prev_elem,score[i].value,next_elem);
-            }
-
-            }
-             return score_list.push(each_item)
-
-
-};
-        compare(nationality_id, id_length,score, input_score)
-        console.log(score_list);
-        debugger
-
+                };
+                compare(nationality_id, id_length, score, input_score)
+                console.log(score_list);
+                var csrftoken = $("[name=csrfmiddlewaretoken]").val();
         $.ajax({
             type:'POST',
             url:'{% url 'nationality_clean:all_data_post' %}',
-            data: { best_score_list : score_list  },
-
-            success: function (data) {
-                $("#SOME-DIV").html('soething done')
-            },
-            error: function(data) {
-                $("#MESSAGE-DIV").html("Something went wrong!");
-            }
+            headers:{
+              "X-CSRFToken": csrftoken
+                },
+            data: { 'best_score_list' : JSON.stringify(score_list), 'csrfmiddlewaretoken': '{{ csrf_token }}'  },
+             success: function(result) { //we got the response
+             alert('Successfully called');
+         },
+         error: function(jqxhr, status, exception) {
+             alert('Exception:', exception);
+         }
         });
         return false;
     });
    });
-</script>
+    </script>
 
 
 
-{% include 'nationalityclean/paginator.html' %}
+    {% include 'nationalityclean/paginator.html' %}
 {% endblock %}
