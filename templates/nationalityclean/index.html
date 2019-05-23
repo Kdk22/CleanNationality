@@ -88,8 +88,9 @@
         $('.select_nationality_class').bind('change', function () {
             var updated_na_value = $(this).val()
             var updated_na_value_id = $(this).attr('id')
-            $(`#verified_nationality_${id}`).val(updated_na_value)
-            console.log($(`verified_nationality__${updated_na_value_id}`))
+            $(`#verified_nationality_${updated_na_value_id}`).val(updated_na_value)
+            debugger
+
 
         });
 
@@ -134,28 +135,23 @@
                 compare(nationality_id, id_length, score, input_score)
                 console.log(score_list);
                 var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url 'nationality_clean:all_data_post' %}',
-                    headers: {
-                        "X-CSRFToken": csrftoken
-                    },
-                    data: {'best_score_list': JSON.stringify(score_list), 'csrfmiddlewaretoken': '{{ csrf_token }}'},
-
-
-                    success: function (result) {
-                        alert('Nationality with score greater than ' + input_score + ' updated')
-                        window.location.reload()
-
-                    },
-                    error: function (jqxhr, status, exception) {
-                        alert('Exception: Nationality is not updated', exception);
-                    }
-                });
-                return false;
-            });
+        $.ajax({
+            type:'POST',
+            url:'{% url 'nationality_clean:all_data_post' %}',
+            headers:{
+              "X-CSRFToken": csrftoken
+                },
+            data: { 'best_score_list' : JSON.stringify(score_list), 'csrfmiddlewaretoken': '{{ csrf_token }}'  },
+             success: function(result) { //we got the response
+             alert('Successfully called');
+         },
+         error: function(jqxhr, status, exception) {
+             alert('Exception:', exception);
+         }
         });
+        return false;
+    });
+   });
     </script>
 
 
