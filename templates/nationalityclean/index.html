@@ -1,7 +1,7 @@
 {% extends "nationalityclean/base.html" %}
 {% block body_block %}
 {% csrf_token %}
- <form  method="post">
+
     <table>
 
 
@@ -27,7 +27,7 @@
                 <input hidden id= "id" class="id" name="id" value="{{ nationality.pk }}">
 
                 <input hidden name="best_score" id="best_score" class="best_score" value="{{ nationality.score }}">
-                <input hidden name="verified_nationality" class="verified_nationality" value="{{ nationality.verified_nationality|capfirst }}">
+                <input hidden name="verified_nationality_{{ nationality.pk }}" class="verified_nationality" value="{{ nationality.verified_nationality|capfirst }}">
                 <td>{{ nationality.unverified_nationality }}</td>
                  <td>{% if nationality.score == 1%}
 
@@ -38,7 +38,7 @@
 
                     {% else %}
 
-                    <select id="na">{% for correct_nationality in df_nationality %}
+                    <select id="{{ nationality.pk }}" class="select_nationality_class" name="select_nationality">{% for correct_nationality in df_nationality %}
                      <option {% ifequal correct_nationality|lower nationality.verified_nationality %} selected {% endifequal %} value="{{ correct_nationality }}">{{ correct_nationality }}</option>{% endfor %}</select></td>
                      <td>{{ nationality.score }}</td>
                     <td><button name="post_all" value="post_all_data"type="submit" class="btn btn-default btn-md btn-l">
@@ -78,9 +78,19 @@
             </span>
         </ul>
 </nav>
-</form>
+
 
     <script type="text/javascript">
+    $('.select_nationality_class').bind('change', function () {
+
+        var x = $(this).val()
+        var id= $(this).attr('id')
+        $(`verified_nationality_${id}`).val(x)
+        console.log(id)
+        console.log($(`verified_nationality_${id}`))
+
+});
+
    $(document).ready(function() {
   $("#post_all").click(function(e) {
     e.preventDefault();
@@ -108,43 +118,42 @@
 
 
         function compare(nationality_id, id_length,score, input_score){
-            score_list = []
+             score_list = []
               each_item=[]
             for(var i=0; i<id_length; i++){
-
-
-
-
-
             if(score[i].value >= input_score){
-
-
                var score_val = $(score[i])
                 var next_elem = $(score[i]).next().val()
                 var prev_elem = $(score[i]).prev().val()
                 each_item.push(prev_elem,score_val.value,next_elem);
             }
-
             }
              return score_list.push(each_item)
+
+
+
 
 
 };
         compare(nationality_id, id_length,score, input_score)
         console.log(score_list);
-
+        debugger
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
 
         $.ajax({
             type:'POST',
             url:'{% url 'nationality_clean:all_data_post' %}',
-            data: { best_score_list : score_list  },
-            debugger
-            success: function (data) {
-                $("#SOME-DIV").html('soething done')
-            },
-            error: function(data) {
-                $("#MESSAGE-DIV").html("Something went wrong!");
-            }
+            headers:{
+              "X-CSRFToken": csrftoken
+                },
+            data: { 'best_score_list' : JSON.stringify(score_list), 'csrfmiddlewaretoken': '{{ csrf_token }}'  },
+
+             success: function(result) { //we got the response
+             alert('Successfully called');
+         },
+         error: function(jqxhr, status, exception) {
+             alert('Exception:', exception);
+         }
         });
         return false;
     });

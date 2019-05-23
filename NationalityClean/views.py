@@ -327,11 +327,13 @@ class PostNationality(View):
 
     def post(self, request, **kwargs):
         pk = self.kwargs['pk']
-        verified_nationality = request.POST['verified_nationality']
+        verified_nationality = request.POST['select_nationality']
         update_nationality = FilterNationality.objects.filter(pk=pk).update(
             verified_nationality=verified_nationality,
             verified_status=True
         )
+        import ipdb
+        ipdb.set_trace()
         return redirect(reverse('nationality_clean:index'))
 
 
@@ -339,6 +341,7 @@ class PostAllNationality(View):
 
 
     def post(self,request, **kwargs):
+        request_getdata = request.POST.get('best_score_list', None)
         import ipdb
         ipdb.set_trace()
         input_score = request.POST['input_score']
