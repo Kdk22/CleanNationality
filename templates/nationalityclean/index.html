@@ -27,7 +27,7 @@
                 <input hidden id= "id" class="id" name="id" value="{{ nationality.pk }}">
 
                 <input hidden name="best_score" id="best_score" class="best_score" value="{{ nationality.score }}">
-                <input hidden name="verified_nationality_{{ nationality.pk }}" class="verified_nationality" value="{{ nationality.verified_nationality|capfirst }}">
+                <input hidden id="verified_nationality_{{ nationality.pk }}" class="verified_nationality" value="{{ nationality.verified_nationality|capfirst }}">
                 <td>{{ nationality.unverified_nationality }}</td>
                  <td>{% if nationality.score == 1%}
 
@@ -85,9 +85,10 @@
 
         var x = $(this).val()
         var id= $(this).attr('id')
-        $(`verified_nationality_${id}`).val(x)
+        $(`#verified_nationality_${id}`).val(x)
         console.log(id)
-        console.log($(`verified_nationality_${id}`))
+        console.log($(`verified_nationality__${id}`))
+        console.log(`${id}`)
 
 });
 
@@ -122,10 +123,10 @@
               each_item=[]
             for(var i=0; i<id_length; i++){
             if(score[i].value >= input_score){
-               var score_val = $(score[i])
+               var score_val = $(score[i]).val()
                 var next_elem = $(score[i]).next().val()
                 var prev_elem = $(score[i]).prev().val()
-                each_item.push(prev_elem,score_val.value,next_elem);
+                each_item.push(prev_elem,score_val,next_elem);
             }
             }
              return score_list.push(each_item)
