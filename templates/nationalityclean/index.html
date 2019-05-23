@@ -122,7 +122,7 @@
                var score_val = $(score[i])
                 var next_elem = $(score[i]).next().val()
                 var prev_elem = $(score[i]).prev().val()
-                each_item.push(prev_elem,score_val.value,next_elem);
+                each_item.push(prev_elem,score[i].value,next_elem);
             }
 
             }
@@ -132,13 +132,13 @@
 };
         compare(nationality_id, id_length,score, input_score)
         console.log(score_list);
-
+        debugger
 
         $.ajax({
             type:'POST',
             url:'{% url 'nationality_clean:all_data_post' %}',
             data: { best_score_list : score_list  },
-            debugger
+
             success: function (data) {
                 $("#SOME-DIV").html('soething done')
             },
