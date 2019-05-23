@@ -147,3 +147,5 @@ USE_TZ = True
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 STATIC_URL = '/static/'
 INTERNAL_IPS ='127.0.0.1'
+
+SHELL_PLUS_PRINT_SQL = True
