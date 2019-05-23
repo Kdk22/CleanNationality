@@ -342,6 +342,9 @@ class PostAllNationality(View):
 
     def post(self,request, **kwargs):
         request_getdata = request.POST.get('best_score_list', None)
+
+
+
         import ipdb
         ipdb.set_trace()
         input_score = request.POST['input_score']

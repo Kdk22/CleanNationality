@@ -82,13 +82,10 @@
 
     <script type="text/javascript">
     $('.select_nationality_class').bind('change', function () {
-
-        var x = $(this).val()
-        var id= $(this).attr('id')
-        $(`#verified_nationality_${id}`).val(x)
-        console.log(id)
-        console.log($(`verified_nationality__${id}`))
-        console.log(`${id}`)
+        var updated_na_value = $(this).val()
+        var updated_na_value_id= $(this).attr('id')
+        $(`#verified_nationality_${id}`).val(updated_na_value)
+        console.log($(`verified_nationality__${updated_na_value_id}`))
 
 });
 
@@ -120,16 +117,15 @@
 
         function compare(nationality_id, id_length,score, input_score){
              score_list = []
-              each_item=[]
             for(var i=0; i<id_length; i++){
             if(score[i].value >= input_score){
                var score_val = $(score[i]).val()
                 var next_elem = $(score[i]).next().val()
                 var prev_elem = $(score[i]).prev().val()
-                each_item.push(prev_elem,score_val,next_elem);
+                score_list.push({id:prev_elem,score:score_val,Nationality:next_elem});
             }
             }
-             return score_list.push(each_item)
+             return score_list
 
 
 
@@ -138,7 +134,6 @@
 };
         compare(nationality_id, id_length,score, input_score)
         console.log(score_list);
-        debugger
         var csrftoken = $("[name=csrfmiddlewaretoken]").val();
 
         $.ajax({
@@ -148,6 +143,7 @@
               "X-CSRFToken": csrftoken
                 },
             data: { 'best_score_list' : JSON.stringify(score_list), 'csrfmiddlewaretoken': '{{ csrf_token }}'  },
+
 
              success: function(result) { //we got the response
              alert('Successfully called');
