@@ -4,15 +4,9 @@ import pandas as pd
 from django.views import View
 from sqlalchemy import create_engine
 from Levenshtein import jaro_winkler, hamming, jaro, distance
-
-from NationalityClean.forms import ReportForm
 from .consts import DB
 from .models import FilterNationality
-from django.forms import formset_factory
-from django.forms import modelformset_factory
-
-# Create your views here.
-from django.views.generic import ListView, TemplateView, CreateView
+from django.views.generic import ListView
 import json
 
 nationality = ['Afghan',
@@ -137,6 +131,7 @@ nationality = ['Afghan',
                'Kazakhstani',
                'Kenyan',
                'Kittitian or Nevisian',
+               'Korean',
                'Kuwaiti',
                'Kyrgyzstani',
                'Laotian',
@@ -308,7 +303,7 @@ def clean_data():
 
 class IndexView(ListView):
     template_name = 'nationalityclean/index.html'
-    paginate_by = 10
+    paginate_by = 20
     queryset = FilterNationality.objects.filter(verified_status=False)
     context_object_name = 'all_nationality'
 
@@ -333,12 +328,9 @@ class PostNationality(View):
 
 class PostAllNationality(View):
 
-
     def post(self,request, **kwargs):
-        request_getdata = request.POST.get('best_score_list', None)
-        print(request_getdata)
+        # request_getdata = request.POST.get('best_score_list', None)
         ajax_val=json.loads(request.POST.get('best_score_list'))
-        bulk_list = list()
         for i in ajax_val:
             nationality_id = int(i['id'])
             best_score= float(i['score']),
@@ -347,7 +339,6 @@ class PostAllNationality(View):
             na_val=nationality[0]['verified_nationality']
 
             if na_val ==(correct_nationality).lower():
-
                 FilterNationality.objects.filter(pk=nationality_id).update(verified_status=True)
             else:
                 FilterNationality.objects.filter(pk=nationality_id).update(verified_nationality=correct_nationality,
