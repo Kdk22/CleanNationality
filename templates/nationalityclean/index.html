@@ -30,12 +30,12 @@
                     <input hidden id="verified_nationality_{{ nationality.pk }}" class="verified_nationality"
                            value="{{ nationality.verified_nationality|capfirst }}">
                     <td>{{ nationality.unverified_nationality }}</td>
-                    <td>{% if nationality.score == 1 %}
-                        {{ nationality.verified_nationality|capfirst }}
+                    {% if nationality.score == 1 %}
+                       <td> {{ nationality.verified_nationality }}</td>
                         <td>{{ nationality.score }}</td>
                     {% else %}
 
-                        <select id="{{ nationality.pk }}" class="select_nationality_class" name="select_nationality">
+                        <td><select id="{{ nationality.pk }}" class="select_nationality_class" name="select_nationality">
                             {% for correct_nationality in df_nationality %}
                                 <option {% ifequal correct_nationality|lower nationality.verified_nationality %}
                                     selected {% endifequal %}
@@ -98,26 +98,19 @@
             $("#post_all").click(function (e) {
                 e.preventDefault();
                 var nationality_id = $(".id")
-
                 let id_length = $(".id").length
                 let score = $(".best_score")
                 let verified_nationality = $(".verified_nationality")
-
                 let input_score = $("#input_score").val()
                 all_data = []
-
                 function list_data(id_length, score, verified_nationality, nationality_id) {
                     each_row_data = []
                     for (var i = 0; i < id_length; i++) {
                         each_row_data.push(nationality_id[i], score[i], verified_nationality[i])
-
                     }
                     all_data.push(each_row_data)
                 };
-
                 list_data(id_length, score, verified_nationality, nationality_id)
-
-
                 function compare(nationality_id, id_length, score, input_score) {
                     score_list = []
                     for (var i = 0; i < id_length; i++) {
@@ -129,8 +122,6 @@
                         }
                     }
                     return score_list
-
-
                 };
                 compare(nationality_id, id_length, score, input_score)
                 console.log(score_list);
@@ -143,10 +134,11 @@
                 },
             data: { 'best_score_list' : JSON.stringify(score_list), 'csrfmiddlewaretoken': '{{ csrf_token }}'  },
              success: function(result) { //we got the response
-             alert('Successfully called');
+             alert('Nationality with score greater than ' +input_score +' Updated Successfully.');
+             window.location.reload(true);
          },
          error: function(jqxhr, status, exception) {
-             alert('Exception:', exception);
+             alert('Cannot Update score greater than ' +input_score, exception);
          }
         });
         return false;
