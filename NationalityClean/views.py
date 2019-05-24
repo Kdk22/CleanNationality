@@ -311,14 +311,11 @@ class IndexView(ListView):
     paginate_by = 10
     queryset = FilterNationality.objects.filter(verified_status=False)
     context_object_name = 'all_nationality'
+
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super().get_context_data(object_list=object_list, **kwargs)
         ctx['df_nationality'] = nationality
         ctx['offset']= self.get_paginate_by(self.get_queryset())*(ctx['page_obj'].number-1)
-        return ctx
-
-    def paginate_queryset(self, queryset, page_size):
-        ctx=super().paginate_queryset(queryset, page_size)
         return ctx
 
 
